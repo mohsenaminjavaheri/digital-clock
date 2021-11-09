@@ -1,0 +1,4 @@
+stepper.c:15:6:start_stepper	8	static
+stepper.c:51:6:motor1	24	static
+stepper.c:84:6:motor2	24	static
+stepper.c:118:6:motors	24	static

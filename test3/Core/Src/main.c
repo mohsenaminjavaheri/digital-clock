@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "math.h"
+#include "stepper.h"
 
 /* USER CODE END Includes */
 
@@ -63,6 +64,7 @@ static void MX_ADC1_Init(void);
 uint32_t AD_RES[2];
 uint32_t flag=0;
 uint32_t flag_1 =0;
+
 float degree = 90;
 float step;
 uint8_t Direction=0;
@@ -118,89 +120,99 @@ int main(void)
 		/* USER CODE BEGIN 3 */
 		HAL_ADC_Start_IT(&hadc1);
 
-		step = degree/ 0.703125;
+		//start_stepper();
 
-		step = round(step);
 
-		// Clockwise
-		if (Direction == 0)
-		{
-			for(int i=0 ; i<step ; i++)
-			{
-				if(AD_RES[0] <100)
-				{
-					flag = 1;
-				}
-				if(AD_RES[1] <100)
-				{
-					flag_1 = 1;
-				}
+		//motor1(0,512);
+		//motor2(1,512);
+//		if(flag==1 && flag_1==1)
+//		{
+			motors(0,256,1,256);
+//		}
 
-				if(flag == 0)
-				{
-					GPIOD->ODR = 0xC000;
-					HAL_Delay(1);
-					GPIOD->ODR = 0x6000;
-					HAL_Delay(1);
-					GPIOD->ODR = 0x3000;
-					HAL_Delay(1);
-					GPIOD->ODR = 0x9000;
-					HAL_Delay(1);
-				}
-				if(flag_1 == 0)
-				{
-					GPIOB->ODR = 0xC000;
-					HAL_Delay(1);
-					GPIOB->ODR = 0x6000;
-					HAL_Delay(1);
-					GPIOB->ODR = 0x3000;
-					HAL_Delay(1);
-					GPIOB->ODR = 0x9000;
-					HAL_Delay(1);
-				}
-			}
-			HAL_Delay(1000);
-		}
-		// Anti clockwise
-		else
-		{
-			for(int i=0 ; i<step ; i++)
-			{
-				if(AD_RES[0] <100)
-				{
-					flag = 1;
-				}
-				if(AD_RES[1] <100)
-				{
-					flag_1 = 1;
-				}
-
-				if(flag == 0)
-				{
-					GPIOD->ODR = 0x9000;
-					HAL_Delay(1);
-					GPIOD->ODR = 0x3000;
-					HAL_Delay(1);
-					GPIOD->ODR = 0x6000;
-					HAL_Delay(1);
-					GPIOD->ODR = 0xC000;
-					HAL_Delay(1);
-				}
-				if(flag_1 == 0)
-				{
-					GPIOB->ODR = 0x9000;
-					HAL_Delay(1);
-					GPIOB->ODR = 0x3000;
-					HAL_Delay(1);
-					GPIOB->ODR = 0x6000;
-					HAL_Delay(1);
-					GPIOB->ODR = 0xC000;
-					HAL_Delay(1);
-				}
-			}
-		}
-
-		HAL_Delay(1000);
+//		step = degree/ 0.703125;
+//
+//		step = round(step);
+//
+//		// Clockwise
+//		if (Direction == 0)
+//		{
+//			for(int i=0 ; i<step ; i++)
+//			{
+//				if(AD_RES[0] <100)
+//				{
+//					flag = 1;
+//				}
+//				if(AD_RES[1] <100)
+//				{
+//					flag_1 = 1;
+//				}
+//
+//				if(flag == 0)
+//				{
+//					GPIOD->ODR = 0xC000;
+//					HAL_Delay(1);
+//					GPIOD->ODR = 0x6000;
+//					HAL_Delay(1);
+//					GPIOD->ODR = 0x3000;
+//					HAL_Delay(1);
+//					GPIOD->ODR = 0x9000;
+//					HAL_Delay(1);
+//				}
+//				if(flag_1 == 0)
+//				{
+//					GPIOB->ODR = 0xC000;
+//					HAL_Delay(1);
+//					GPIOB->ODR = 0x6000;
+//					HAL_Delay(1);
+//					GPIOB->ODR = 0x3000;
+//					HAL_Delay(1);
+//					GPIOB->ODR = 0x9000;
+//					HAL_Delay(1);
+//				}
+//			}
+//			HAL_Delay(1000);
+//		}
+//		// Anti clockwise
+//		else
+//		{
+//			for(int i=0 ; i<step ; i++)
+//			{
+//				if(AD_RES[0] <100)
+//				{
+//					flag = 1;
+//				}
+//				if(AD_RES[1] <100)
+//				{
+//					flag_1 = 1;
+//				}
+//
+//				if(flag == 0)
+//				{
+//					GPIOD->ODR = 0x9000;
+//					HAL_Delay(1);
+//					GPIOD->ODR = 0x3000;
+//					HAL_Delay(1);
+//					GPIOD->ODR = 0x6000;
+//					HAL_Delay(1);
+//					GPIOD->ODR = 0xC000;
+//					HAL_Delay(1);
+//				}
+//				if(flag_1 == 0)
+//				{
+//					GPIOB->ODR = 0x9000;
+//					HAL_Delay(1);
+//					GPIOB->ODR = 0x3000;
+//					HAL_Delay(1);
+//					GPIOB->ODR = 0x6000;
+//					HAL_Delay(1);
+//					GPIOB->ODR = 0xC000;
+//					HAL_Delay(1);
+//				}
+//			}
+//		}
+//
+//		HAL_Delay(1000);
 
 	}
 	/* USER CODE END 3 */
