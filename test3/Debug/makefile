@@ -54,8 +54,8 @@ all: main-build
 main-build: test3.elf secondary-outputs
 
 # Tool invocations
-test3.elf: $(OBJS) $(USER_OBJS) D:\Hoshmand\ Electronic\IDE\ Workspace\test3\STM32F103ZETX_FLASH.ld
-	arm-none-eabi-gcc -o "test3.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Hoshmand Electronic\IDE Workspace\test3\STM32F103ZETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="test3.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+test3.elf: $(OBJS) $(USER_OBJS) D:\Hoshmand\ Electronic\IDE\ Workspace\digital\ clock\digital-clock\test3\STM32F103ZETX_FLASH.ld
+	arm-none-eabi-gcc -o "test3.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Hoshmand Electronic\IDE Workspace\digital clock\digital-clock\test3\STM32F103ZETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="test3.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
