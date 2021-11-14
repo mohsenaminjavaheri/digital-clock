@@ -66,7 +66,9 @@ static void MX_USART1_UART_Init(void);
 uint32_t AD_RES[2];
 uint32_t flag=0;
 uint32_t flag_1 =0;
-//uin16_t degree;
+uint16_t degree;
+float step;
+uint16_t round_step;
 
 uint8_t setting[2]={0};
 uint8_t buffer[30]={0};
@@ -145,13 +147,33 @@ int main(void)
 		/* USER CODE BEGIN 3 */
 //		HAL_ADC_Start_IT(&hadc1);
 
-		uint8_t MSB = buffer[0] & 0xF0;
+		//get Direction of Rotation
+		uint8_t MSB = buffer[1] & 0xF0;
+		//4 bit shift to right
 		MSB = MSB>>4;
-		uint8_t LSB = buffer[0] & 0x0F;
 
-//		degree = LSB | buffer[1];
+		//get 4bit of degree in binery
+		uint8_t LSB = buffer[1] & 0x0F;
+		//calculate degree in 2 byte
+		degree = LSB<<8 | buffer[2];
+		//calculate steps
+		step = degree /0.703125 ;
+		round_step = round(step);
 
 
+
+//		job
+//
+//		switch(buffer[0])
+//		{
+//			case 0x01 :
+//				id = buffer(n);
+//			case 0x02 :
+//				start();
+//			case 0x03 :
+//				LSB = buffer[n] & 0x0F;
+//
+//		}
 
 	}
 	/* USER CODE END 3 */
