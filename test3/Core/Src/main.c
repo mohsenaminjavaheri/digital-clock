@@ -33,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define   n   0  //number of clock
+//#define   n   0  //number of clock
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -64,19 +64,20 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static uint8_t  n=0;
 uint32_t AD_RES[2];
 uint32_t flag=0;
 uint32_t flag_1 =0;
-uint8_t chenge_Data=0;
-uint8_t end=0;
+uint8_t  chenge_Data=0;
+uint8_t  end=0;
 
-uint8_t setting[1]={0};
-uint8_t buffer[30]={0};
+uint8_t  setting[1]={0};
+uint8_t  buffer[30]={0};
 
-uint8_t MSB_1;
-uint8_t MSB_2;
-uint8_t Direction_1;
-uint8_t Direction_2;
+uint8_t  MSB_1;
+uint8_t  MSB_2;
+uint8_t  Direction_1;
+uint8_t  Direction_2;
 uint16_t degree_1;
 uint16_t degree_2;
 float step_1;
@@ -143,9 +144,9 @@ int main(void)
 
 	while(setting[0] == 0);
 
-	int numberofmotor = setting[0];
+	int numberofclock = setting[0];
 
-	numberofarray = 5*numberofmotor+2;
+	numberofarray = 5*numberofclock+1;
 
 	HAL_UART_DMAStop(&huart1);
 
@@ -196,16 +197,19 @@ int main(void)
 
 
 
-		//		job
+		//job
 
 		switch(buffer[0])
 		{
-			case 0x01 :
-				id = buffer[5*n+1];
-			case 0x02 :
+			case 0x01 : //set ID : Number of clock
+				n = buffer[1];
+				break;
+			case 0x02 : //go to position 0
 				start_stepper();
-			case 0x03 :
+				break;
+			case 0x03 : //go to specific position
 				motors(Direction_1,round_step_1,Direction_2	,round_step_2);
+				break;
 		}
 
 
