@@ -6,13 +6,17 @@
  */
 #include "main.h"
 #include "stepper.h"
+#include "delayus.h"
 
 extern uint32_t AD_RES[2];
 extern uint32_t flag;
 extern uint32_t flag_1 ;
 uint32_t i=0;
+uint32_t j=0;
 extern uint8_t chenge_Data;
 extern uint8_t end;
+extern uint8_t set;
+extern uint8_t set_1;
 
 void start_stepper(void)
 {
@@ -28,24 +32,73 @@ void start_stepper(void)
 	if(flag == 0)
 	{
 		GPIOD->ODR = 0xC000;
-		HAL_Delay(1);
+		delay_us(2500);
 		GPIOD->ODR = 0x6000;
-		HAL_Delay(1);
+		delay_us(2500);
 		GPIOD->ODR = 0x3000;
-		HAL_Delay(1);
+		delay_us(2500);
 		GPIOD->ODR = 0x9000;
-		HAL_Delay(1);
+		delay_us(2500);
 	}
 	if(flag_1 == 0)
 	{
 		GPIOB->ODR = 0xC000;
-		HAL_Delay(1);
+		delay_us(2500);
 		GPIOB->ODR = 0x6000;
-		HAL_Delay(1);
+		delay_us(2500);
 		GPIOB->ODR = 0x3000;
-		HAL_Delay(1);
+		delay_us(2500);
 		GPIOB->ODR = 0x9000;
-		HAL_Delay(1);
+		delay_us(2500);
+	}
+
+}
+
+void start_stepper_2(void)
+{
+	while(1)
+	{
+		if(flag == 1 && flag_1 == 1)
+		{
+			break;
+		}
+		if(chenge_Data==1)
+		{
+			break;
+		}
+
+		if(AD_RES[0] <100)
+		{
+			flag = 1;
+		}
+		if(AD_RES[1] <100)
+		{
+			flag_1 = 1;
+		}
+
+		if(flag == 0)
+		{
+			GPIOD->ODR = 0xC000;
+			HAL_Delay(1);
+			GPIOD->ODR = 0x6000;
+			HAL_Delay(1);
+			GPIOD->ODR = 0x3000;
+			HAL_Delay(1);
+			GPIOD->ODR = 0x9000;
+			HAL_Delay(1);
+		}
+		if(flag_1 == 0)
+		{
+			GPIOB->ODR = 0xC000;
+			HAL_Delay(1);
+			GPIOB->ODR = 0x6000;
+			HAL_Delay(1);
+			GPIOB->ODR = 0x3000;
+			HAL_Delay(1);
+			GPIOB->ODR = 0x9000;
+			HAL_Delay(1);
+		}
+
 	}
 }
 
