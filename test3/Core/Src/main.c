@@ -23,7 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "math.h"
-
+#include "stepper.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,6 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define   n   0  //number of clock
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -66,12 +67,23 @@ static void MX_USART1_UART_Init(void);
 uint32_t AD_RES[2];
 uint32_t flag=0;
 uint32_t flag_1 =0;
-uint16_t degree;
-float step;
-uint16_t round_step;
+uint8_t chenge_Data=0;
+uint8_t end=0;
 
-uint8_t setting[2]={0};
+uint8_t setting[1]={0};
 uint8_t buffer[30]={0};
+
+uint8_t MSB_1;
+uint8_t MSB_2;
+uint8_t Direction_1;
+uint8_t Direction_2;
+uint16_t degree_1;
+uint16_t degree_2;
+float step_1;
+float step_2;
+uint32_t round_step_1;
+uint32_t round_step_2;
+uint8_t id=0;
 
 int numberofarray =0;
 /*void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
@@ -82,6 +94,10 @@ int numberofarray =0;
 	if(AD_RES[1]<100) flag_1=1;
 
 }*/
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	chenge_Data = 1;
+}
 
 /* USER CODE END 0 */
 
@@ -123,20 +139,20 @@ int main(void)
 	HAL_ADC_Start_IT(&hadc1);
 
 
-	HAL_UART_Receive_DMA(&huart1, buffer, 1);
+	HAL_UART_Receive_DMA(&huart1, setting, 1);
 
-	while(buffer[0] == 0);
+	while(setting[0] == 0);
 
-	int numberofmotor = buffer[0];
+	int numberofmotor = setting[0];
 
 	numberofarray = 5*numberofmotor+2;
 
 	HAL_UART_DMAStop(&huart1);
 
+	chenge_Data = 0;
+
 	HAL_UART_Receive_DMA(&huart1, buffer, numberofarray);
 	/* USER CODE END 2 */
-
-
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
@@ -145,35 +161,53 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-//		HAL_ADC_Start_IT(&hadc1);
+		HAL_ADC_Start_IT(&hadc1);
+		if(chenge_Data == 1 && buffer[0] ==0x03)
+		{
+			//get Direction of Rotation
+			uint8_t MSB_1 = buffer[5*n+2] & 0xF0;
+			//4 bit shift to right
+			Direction_1 = MSB_1>>4;
 
-		//get Direction of Rotation
-		uint8_t MSB = buffer[1] & 0xF0;
-		//4 bit shift to right
-		MSB = MSB>>4;
+			//get Direction of Rotation
+			uint8_t MSB_2 = buffer[5*n+4] & 0xF0;
+			//4 bit shift to right
+			Direction_2 = MSB_2>>4;
 
-		//get 4bit of degree in binery
-		uint8_t LSB = buffer[1] & 0x0F;
-		//calculate degree in 2 byte
-		degree = LSB<<8 | buffer[2];
-		//calculate steps
-		step = degree /0.703125 ;
-		round_step = round(step);
+			//get 4bit of degree in binary
+			uint8_t LSB_1 = buffer[5*n+2] & 0x0F;
+			//calculate degree in 2 byte
+			degree_1 = LSB_1<<8 | buffer[5*n+3];
+			//calculate steps
+			step_1 = degree_1 /0.703125 ;
+			round_step_1 = round(step_1);
+
+			//get 4bit of degree in binary
+			uint8_t LSB_2 = buffer[5*n+4] & 0x0F;
+			//calculate degree in 2 byte
+			degree_2 = LSB_2<<8 | buffer[5*n+5];
+			//calculate steps
+			step_2 = degree_2 /0.703125 ;
+			round_step_2 = round(step_2);
+
+			end = 0;
+			chenge_Data = 0;
+		}
 
 
 
-//		job
-//
-//		switch(buffer[0])
-//		{
-//			case 0x01 :
-//				id = buffer(n);
-//			case 0x02 :
-//				start();
-//			case 0x03 :
-//				LSB = buffer[n] & 0x0F;
-//
-//		}
+		//		job
+
+		switch(buffer[0])
+		{
+			case 0x01 :
+				id = buffer[5*n+1];
+			case 0x02 :
+				start_stepper();
+			case 0x03 :
+				motors(Direction_1,round_step_1,Direction_2	,round_step_2);
+		}
+
 
 	}
 	/* USER CODE END 3 */
