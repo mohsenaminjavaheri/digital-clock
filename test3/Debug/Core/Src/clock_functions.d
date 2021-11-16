@@ -27,7 +27,7 @@ Core/Src/clock_functions.o: ../Core/Src/clock_functions.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/stepper.h ../Core/Inc/DWT_Delay.h
+ ../Core/Inc/stepper.h ../Core/Inc/DWT_Delay.h ../Core/Inc/eeprom.h
 
 ../Core/Inc/clock_functions.h:
 
@@ -90,3 +90,5 @@ Core/Src/clock_functions.o: ../Core/Src/clock_functions.c \
 ../Core/Inc/stepper.h:
 
 ../Core/Inc/DWT_Delay.h:
+
+../Core/Inc/eeprom.h:

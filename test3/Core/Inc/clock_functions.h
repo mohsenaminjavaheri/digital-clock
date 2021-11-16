@@ -10,6 +10,7 @@
 
 #include "main.h"
 
+void set_id(void);
 void start_clock(void);
 void spec_position(uint8_t Direction_1, uint32_t step_1 ,uint8_t Direction_2, uint32_t step_2);
 

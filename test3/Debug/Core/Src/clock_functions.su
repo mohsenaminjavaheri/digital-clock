@@ -1,2 +1,3 @@
-clock_functions.c:22:6:start_clock	8	static
-clock_functions.c:50:6:spec_position	24	static
+clock_functions.c:25:6:set_id	8	static
+clock_functions.c:35:6:start_clock	8	static
+clock_functions.c:63:6:spec_position	24	static

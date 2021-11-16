@@ -8,6 +8,7 @@
 #include "clock_functions.h"
 #include "stepper.h"
 #include "DWT_Delay.h"
+#include "eeprom.h"
 
 #define STEPPER_MOTOR1   0
 #define STEPPER_MOTOR2   1
@@ -18,6 +19,18 @@ extern uint32_t flag;
 extern uint32_t flag_1;
 extern uint32_t i;
 extern uint8_t  chenge_Data;
+extern uint8_t  buffer[30];
+
+
+void set_id(void)
+{
+	HAL_FLASH_Unlock();
+
+	EE_Init();
+
+	EE_WriteVariable(0, buffer[1]);
+
+}
 
 void start_clock(void)
 {

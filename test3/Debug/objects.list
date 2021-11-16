@@ -2,6 +2,7 @@
 "Core/Src/STEPPER.o"
 "Core/Src/STEPPER_cfg.o"
 "Core/Src/clock_functions.o"
+"Core/Src/eeprom.o"
 "Core/Src/main.o"
 "Core/Src/stm32f1xx_hal_msp.o"
 "Core/Src/stm32f1xx_it.o"
