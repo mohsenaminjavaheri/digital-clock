@@ -24,7 +24,8 @@
 /* USER CODE BEGIN Includes */
 #include "math.h"
 #include "stepper.h"
-#include "delayus.h"
+#include "DWT_Delay.h"
+#include "clock_functions.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,7 +35,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-//#define   n   0  //number of clock
+#define STEPPER_MOTOR1   0
+#define STEPPER_MOTOR2   1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -61,7 +63,6 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_USART1_UART_Init(void);
-static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -76,6 +77,7 @@ uint8_t  chenge_Data=0;
 uint8_t  end=0;
 uint8_t set=0;
 uint8_t set_1=0;
+uint32_t i=0;
 
 uint8_t  setting[1]={0};
 uint8_t  buffer[30]={0};
@@ -106,6 +108,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	chenge_Data = 1;
 }
 
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
+{
+	STEPPER_TMR_OVF_ISR(htim);
+}
 
 
 /* USER CODE END 0 */
@@ -141,7 +147,6 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_USART1_UART_Init();
-  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 	HAL_ADCEx_Calibration_Start(&hadc1);
 
@@ -163,7 +168,12 @@ int main(void)
 
 	HAL_UART_Receive_DMA(&huart1, buffer, numberofarray);
 
-	HAL_TIM_Base_Start(&htim1);
+	STEPPERS_Init_TMR(&htim1);
+
+	STEPPER_SetSpeed(STEPPER_MOTOR1, 100);
+	STEPPER_SetSpeed(STEPPER_MOTOR2, 100);
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -182,6 +192,7 @@ int main(void)
 		}
 		if(chenge_Data == 1 && buffer[0] ==0x03)
 		{
+
 			//get Direction of Rotation
 			uint8_t MSB_1 = buffer[5*n+2] & 0xF0;
 			//4 bit shift to right
@@ -197,7 +208,7 @@ int main(void)
 			//calculate degree in 2 byte
 			degree_1 = LSB_1<<8 | buffer[5*n+3];
 			//calculate steps
-			step_1 = degree_1 /0.703125 ;
+			step_1 = degree_1 /0.17578125 ;
 			round_step_1 = round(step_1);
 
 			//get 4bit of degree in binary
@@ -205,11 +216,10 @@ int main(void)
 			//calculate degree in 2 byte
 			degree_2 = LSB_2<<8 | buffer[5*n+5];
 			//calculate steps
-			step_2 = degree_2 /0.703125 ;
+			step_2 = degree_2 /0.17578125 ;
 			round_step_2 = round(step_2);
 
-			end = 0;
-			chenge_Data = 0;
+			i = 1;
 		}
 
 
@@ -223,10 +233,10 @@ int main(void)
 			n = buffer[1];
 			break;
 		case 0x02 : //go to position 0
-			start_stepper_2();
+			start_clock();
 			break;
 		case 0x03 : //go to specific position
-			motors(Direction_1,round_step_1,Direction_2	,round_step_2);
+			spec_position(Direction_1,round_step_1,Direction_2	,round_step_2);
 			break;
 		}
 
@@ -338,46 +348,6 @@ static void MX_ADC1_Init(void)
   * @param None
   * @retval None
   */
-static void MX_TIM1_Init(void)
-{
-
-  /* USER CODE BEGIN TIM1_Init 0 */
-
-  /* USER CODE END TIM1_Init 0 */
-
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-
-  /* USER CODE BEGIN TIM1_Init 1 */
-
-  /* USER CODE END TIM1_Init 1 */
-  htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 71;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 65535;
-  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 0;
-  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM1_Init 2 */
-
-  /* USER CODE END TIM1_Init 2 */
-
-}
 
 /**
   * @brief USART1 Initialization Function
