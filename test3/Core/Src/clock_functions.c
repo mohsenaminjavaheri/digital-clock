@@ -24,12 +24,16 @@ extern uint8_t  buffer[30];
 
 void set_id(void)
 {
-	HAL_FLASH_Unlock();
+	if(chenge_Data==1)
+	{
+		HAL_FLASH_Unlock();
 
-	EE_Init();
+		EE_Init();
 
-	EE_WriteVariable(0, buffer[1]);
+		EE_WriteVariable(0, buffer[1]);
 
+		chenge_Data = 0;
+	}
 }
 
 void start_clock(void)

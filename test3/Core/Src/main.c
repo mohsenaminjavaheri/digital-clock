@@ -70,7 +70,7 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static uint8_t  n;
+uint16_t  n=0;
 uint32_t AD_RES[2];
 uint32_t flag=0;
 uint32_t flag_1 =0;
@@ -152,7 +152,7 @@ int main(void)
 
 	EE_Init();
 
-	EE_ReadVariable(0, n);
+	EE_ReadVariable(0, &n);
 
 	HAL_ADCEx_Calibration_Start(&hadc1);
 
