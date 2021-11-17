@@ -196,7 +196,7 @@ int main(void)
 			flag = 0;
 			flag_1 = 0;
 		}
-		if(chenge_Data == 1 && buffer[0] ==0x03)
+		if(chenge_Data == 1 && buffer[0] ==0x03 && buffer[5*n+1] == n)
 		{
 
 			//get Direction of Rotation
@@ -242,7 +242,7 @@ int main(void)
 			start_clock();
 			break;
 		case 0x03 : //go to specific position
-			spec_position(Direction_1,round_step_1,Direction_2	,round_step_2);
+			spec_position(Direction_1,round_step_1,Direction_2,round_step_2);
 			break;
 		}
 
